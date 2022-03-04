@@ -1,3 +1,4 @@
+import 'package:calculator/app/ui/calc_button.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
@@ -22,10 +23,18 @@ class HomeView extends GetView<HomeController> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.end,
                 children: [
-                  Container(child: Text("9+7"),),
-                  Container(child: Text("16"),),
+                  Obx(() {
+                    return Container(
+                      child: Text(controller.query.value),
+                    );
+                  }),
+                  Obx(() {
+                    return Container(
+                      child: Text(controller.result.value),
+                    );
+                  }),
                 ],
-              ),   //TODO: display expression here
+              ), //TODO: display expression here
             ),
           ),
           Expanded(
@@ -33,23 +42,23 @@ class HomeView extends GetView<HomeController> {
             child: GridView.count(
               physics: const NeverScrollableScrollPhysics(),
               crossAxisCount: 4,
-              children: [
-                ...List.generate(controller.keys.length, (index) {return Padding(
+              children: List.generate(controller.allKeys.length, (index) {
+                return Padding(
                   padding: const EdgeInsets.all(8.0),
-                  child: _myWidget(index),
-                );}),
-              ],
+                  child: CalcButton(
+                    color: Color(controller.allKeys[index].keyColor),
+                    onPressed: () {
+                      controller.query.value = controller.query.value + controller.allKeys[index].keyText;
+                      // controller.result.value = math.eval(controller.query.value);
+                    },
+                    btnText: controller.allKeys[index].keyText,
+                  ),
+                );
+              }),
             ),
           ),
         ],
       ),
     );
-  }
-  ElevatedButton _myWidget(int index) {
-    return ElevatedButton(
-    // style: ButtonStyle(
-    //   backgroundColor: MaterialStateProperty.all<Color>(Color(controller.keys[index][1])), //wants int, passing string
-    // ),
-    onPressed: () {}, child: Text(controller.keys[index][0])); // replace * with your rupee or use Icon instead
   }
 }
